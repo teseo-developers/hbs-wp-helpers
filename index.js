@@ -1,9 +1,5 @@
-var colSizes = {
-    colXs: 767,
-    colSm: 768,
-    colMd: 992,
-    colLg:1200
-}
+var colSizes = [767,768,992,1200],
+    totalCols =  12;
 
 var helpers = {
     srcSet: function(media, defaultImg){
@@ -45,26 +41,32 @@ var helpers = {
 
         return buildSrcSet(media.source_url, srcSet);
     },
-    srcSizes: function(colXs,colSm,colMd,colLg){
-        return ' sizes=" '+
-            ' (max-width:767px) '+ (767/(12/colXs)) +'px,' +
-            ' (min-width:768px) '+  (768/(12/colSm)) +'px,'+
-            ' (min-width:992px) '+  (992/(12/colMd)) +'px,'+
-            ' (min-width:1200px) ' ; (1200/(12/colLg)) +'px' + ';"';
+    srcSizes: function(){
+
+        var srcSizes = ' sizes=" ';
+        var options = arguments[arguments.length - 1];
+        //Takes the array of arguments, last argument is options so length -2.
+        for(var i = 0; i < arguments.length - 1; ++i) { //classic for loop -> performance :)
+            if(i == 0)
+                srcSizes += '(max-width:'+colSizes[i]+'px) '+ (colSizes[i]/(totalCols/arguments[i])) +'px';
+            else
+                srcSizes += ',(min-width:'+colSizes[i]+'px) '+ (colSizes[i]/(totalCols/arguments[i])) +'px';
+
+        }
+        srcSizes += ';"'
+        return srcSizes;
+
     }
 };
 
-exports.setColSizes = function(colXs,colSm,colMd,colLg){
-    colSizes = {
-        colXs: colXs,
-        colSm: colSm,
-        colMd: colMd,
-        colLg: colLg
+module.exports = {
+    init: function(hbs){
+        for(var key in helpers){
+            hbs.registerHelper(key, helpers[key]);
+        }
+    },
+    setColSizes : function(customColSizes,customTotalCols){
+        colSizes = customColSizes;
+        totalCols = customTotalCols;
     }
-}
-
-exports.registerHelper = function(hbs){
-    for(var key in helpers){
-        hbs.registerHelper(key, helpers[key]);
-    }
-}
+};
