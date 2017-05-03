@@ -19,7 +19,7 @@
     "img",
     "bootstrap"
   ],
-  "author": "Javier Torres",
+  "author": "Javier Torres <javier.torres@teseo.es> (http://teseo.es)",
   "contributors": [
     { "name"  : "Adrián Santamaría"
     , "email" : "adrian.santamaria@teseo.es"
