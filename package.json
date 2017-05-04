@@ -1,7 +1,7 @@
 {
   "name": "hbs-wp-helpers",
   "version": "1.0.0",
-  "description": "Useful Handlebars helpers for responsive Wordpress API images",
+  "description": "Handlebars helpers for responsive Wordpress API images",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -21,14 +21,18 @@
   ],
   "author": "Javier Torres <javier.torres@teseo.es> (http://teseo.es)",
   "contributors": [
-    { "name"  : "Adrián Santamaría"
-    , "email" : "adrian.santamaria@teseo.es"
-    , "url"   : "teseo.es"
+    {
+      "name": "Adrián Santamaría",
+      "email": "adrian.santamaria@teseo.es",
+      "url": "teseo.es"
     }
   ],
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/teseo-developers/hbs-wp-helpers/issues"
   },
-  "homepage": "https://github.com/teseo-developers/hbs-wp-helpers#readme"
+  "homepage": "https://github.com/teseo-developers/hbs-wp-helpers#readme",
+  "dependencies": {
+    "express-hbs": "^1.0.4"
+  }
 }

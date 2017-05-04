@@ -1,3 +1,5 @@
+var hbs = require('express-hbs');
+
 var colSizes = [767,768,992,1200],
     totalCols =  12;
 
@@ -59,14 +61,14 @@ var helpers = {
     }
 };
 
-module.exports = {
-    init: function(hbs){
-        for(var key in helpers){
-            hbs.registerHelper(key, helpers[key]);
-        }
-    },
-    setColSizes : function(customColSizes,customTotalCols){
-        colSizes = customColSizes;
-        totalCols = customTotalCols;
-    }
+/**
+ * Regsiter helpers to handlebars.
+ */
+for(var key in helpers){
+    hbs.registerHelper(key, helpers[key]);
+}
+
+exports.setColSizes = function(customColSizes,customTotalCols){
+    colSizes = customColSizes;
+    totalCols = customTotalCols;
 };
