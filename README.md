@@ -4,9 +4,9 @@ Handlebars helpers for rendering responsive images in posts while usring [Wordpr
 
 Passing post's media object and bootstrap column sizes:
 ```handlebars
-<img class="col-xs-12 col-sm-6 col-md-4 col-lg-3"
-    {{{srcSet post._embedded.wp:featuredmedia.0. '/images/if-no-image.jpg'}}}
-    {{{srcSizes 12 6 4 3}}}>
+<img src="/images/if-no-image.jpg" class="col-xs-12 col-sm-6 col-md-4 col-lg-3"
+     srcset="{{{srcSet post._embedded.wp:featuredmedia.0. }}}""
+     sices="{{{srcSizes 12 6 4 3}}}">
 ```
 will render into:
 ```html

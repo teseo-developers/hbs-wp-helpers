@@ -4,29 +4,19 @@ var colSizes = [767,768,992,1200],
     totalCols =  12;
 
 var helpers = {
-    srcSet: function(media, defaultImg){
-        var buildSrcSet = function(src,srcSet){
-            var built = '';
-            if(src)
-                built += 'src="' + src + '"';
-            if(srcSet){
-                built += ' srcset="';
-
-                srcSet.forEach(function(size,i){
-                    built+= size.src + ' ' + size.width + 'w';
-                    if(i != srcSet.length-1){
-                        built += ',';
-                    }
-                });
-                built += ' " ';
-            }
+    srcSet: function(media){
+        if(!media.media_details)
+            return;
+        var buildSrcSet = function(srcSet){
+            var built = '\n';
+            srcSet.forEach(function(size,i){
+                built+= size.src + ' ' + size.width + 'w';
+                if(i != srcSet.length-1){
+                    built += ',\n';
+                }
+            });
             return built;
         };
-
-        if(!media)
-            return buildSrcSet(defaultImg /*, noSrcSet*/);
-        if(!media.media_details)
-            return buildSrcSet(media.source_url /*, noSrcSet*/);
 
         var srcSet = [];
         for (var property in media.media_details.sizes) {
@@ -36,26 +26,21 @@ var helpers = {
                 src: 	size.source_url
             });
         }
-        srcSet.push({
-            width: 	media.media_details.width,
-            src: 	media.source_url
-        });
-
-        return buildSrcSet(media.source_url, srcSet);
+        return buildSrcSet(srcSet);
     },
     srcSizes: function(){
 
-        var srcSizes = ' sizes=" ';
+        var srcSizes = '\n';
         var options = arguments[arguments.length - 1];
         //Takes the array of arguments, last argument is options so length -2.
         for(var i = 0; i < arguments.length - 1; ++i) { //classic for loop -> performance :)
             if(i == 0)
-                srcSizes += '(max-width:'+colSizes[i]+'px) '+ (colSizes[i]/(totalCols/arguments[i])) +'px';
+                srcSizes += '(max-width:';
             else
-                srcSizes += ',(min-width:'+colSizes[i]+'px) '+ (colSizes[i]/(totalCols/arguments[i])) +'px';
+                srcSizes += '\n,(min-width:';
+            srcSizes += colSizes[i]+'px) '+ (colSizes[i]/(totalCols/arguments[i])).toFixed() +'px';
 
         }
-        srcSizes += ';"'
         return srcSizes;
 
     }
