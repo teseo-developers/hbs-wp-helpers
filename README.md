@@ -1,6 +1,6 @@
 # hbs-wp-helpers 
 
-Handlebars helpers for rendering responsive images in posts while usring [Wordpress API V2](https://www.npmjs.com/package/wpapi).
+Handlebars helpers for rendering responsive images in posts while using [Wordpress API V2](https://www.npmjs.com/package/wpapi).
 
 Passing post's media object and bootstrap column sizes:
 ```handlebars

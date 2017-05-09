@@ -5,6 +5,8 @@ var colSizes = [767,768,992,1200],
 
 var helpers = {
     srcSet: function(media){
+        if(!media)
+            return;
         if(!media.media_details)
             return;
         var buildSrcSet = function(srcSet){
