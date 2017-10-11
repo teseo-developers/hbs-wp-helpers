@@ -41,7 +41,7 @@ hbsWpHelpers  = require('hbs-wp-helpers');
 Generates the html attribute *srcset* to an *img* by parsing the "featured_media" object from a post.
 Input:
 ```javasctipt
-srcSet([post-media-object])
+srcSet(postMediaObject)
 ```
 Output:
 ```html
@@ -50,12 +50,20 @@ srcset="[image-small-size-path]  [small-size]w,
         [image-medium-size-path] [medium-size]w,
         [image-large-size-path]  [large-size]w">
 ```
+### srcSetByHeight
+Same as `srcSet` but uses height values.
+
+### srcMediaFitsHeight & srcMediaFitsWidth
+Takes the closest image that covers the height/width passed as param:
+```javasctipt
+srcMediaFitsHeight(300px, postMediaObject)
+```
 
 ### srcSizes
 Generates the html attribute *sizes* to an *img* by giving the number of columns occuped in the grid.
 Input:
 ```javasctipt
-srcSizes([col-xs,col-sm,...])
+srcSizes(col-xs,col-sm,[...])
 ```
 Output:
 ```html
