@@ -2,29 +2,6 @@
 
 Handlebars helpers for rendering responsive images in posts while using [Wordpress API V2](https://www.npmjs.com/package/wpapi).
 
-Passing post's media object and bootstrap column sizes:
-```handlebars
-<img src="/images/if-no-image.jpg" class="col-xs-12 col-sm-6 col-md-4 col-lg-3"
-     srcset="{{{srcSet post._embedded.wp:featuredmedia.0. }}}""
-     sices="{{{srcSizes 12 6 4 3}}}">
-```
-will render into:
-```html
-<img
-    src="http://your-wordpress-site.com/wp-content/uploads/sites/2/2017/03/My-Image-1.jpg"
-    srcset="
-        http://your-wordpress-site.com/wp-content/uploads/sites/2/2017/03/My-Image-1-150x150.jpg 150w,
-        http://your-wordpress-site.com/wp-content/uploads/sites/2/2017/03/My-Image-1-300x225.jpg 250w,
-        http://your-wordpress-site.com/wp-content/uploads/sites/2/2017/03/My-Image-1-600x600.jpg 200w,
-        http://your-wordpress-site.com/wp-content/uploads/sites/2/2017/03/My-Image-1-1280x720.jpg 320w "
-    sizes="
-        (max-width:767px) 383.5px,
-        (min-width:768px) 256px,
-        (min-width:992px) 330.6666666666667px,
-        (min-width:1200px) 400px;" >
-```
-
-
 ## Installation
 
 ```sh
@@ -41,29 +18,34 @@ hbsWpHelpers  = require('hbs-wp-helpers');
 Generates the html attribute *srcset* to an *img* by parsing the "featured_media" object from a post.
 Input:
 ```javasctipt
-srcSet(postMediaObject)
+{{srcSet postMediaObject}}
 ```
-Output:
+Example:
+```handlebars
+<img src="/images/if-no-image.jpg" srcset="{{{srcSet post._embedded.wp:featuredmedia.0. }}}">
+```
+Result:
 ```html
-<img src="http://your-wordpress-site.com/wp-content/uploads/sites/2/2017/03/fullsize.jpg"
-srcset="[image-small-size-path]  [small-size]w,
-        [image-medium-size-path] [medium-size]w,
-        [image-large-size-path]  [large-size]w">
+<img
+    src="http://your-wordpress-site.com/wp-content/uploads/sites/2/2017/03/My-Image-1.jpg"
+    srcset="
+        http://your-wordpress-site.com/wp-content/uploads/sites/2/2017/03/My-Image-1-150x150.jpg 150w,
+        http://your-wordpress-site.com/wp-content/uploads/sites/2/2017/03/My-Image-1-300x225.jpg 250w,
+        http://your-wordpress-site.com/wp-content/uploads/sites/2/2017/03/My-Image-1-600x600.jpg 200w,
+        http://your-wordpress-site.com/wp-content/uploads/sites/2/2017/03/My-Image-1-1280x720.jpg 320w ">
 ```
+
 ### srcSetByHeight
 Same as `srcSet` but uses height values.
 
-### srcMediaFitsHeight & srcMediaFitsWidth
+### srcMediaFitsHeight / srcMediaFitsWidth
 Takes the closest image that covers the height/width passed as param:
 ```javasctipt
 srcMediaFitsHeight(300px, postMediaObject)
 ```
 
-### srcSizes
-Generates the html attribute *sizes* to an *img* by giving the number of columns occuped in the grid.
-Input:
-```javasctipt
-srcSizes(col-xs,col-sm,[...])
+```handlebars
+{{srcSizes col-xs col-sm, [...]}}
 ```
 Output:
 ```html
@@ -73,22 +55,94 @@ sizes=" (max-width:767px) [pixels-col-xs-passed]px,
         ...
         ">
 ```
-## Custom media queries
-You can define custom media queries. Default values are bootstrap sizes [767,768,992,1200].
 
+###toArray
+Converts passed params to array:
+ ```handlebars
+ {{toArray param1 param2 param3}}
+ ```
+ Result:
 ```javascript
- //First argument is an array of media quieries in pixels, first argmuent is a max media qu and next are min:
- //Second argument is the total number of columns of the grid, bootstrap and skeleton use 12, other may use 16.
-hbsWpHelpers.setColSizes([100,500,2000],16);
-...
- {{{srcSizes 16 8 4}}}>
+[param1, param2, param3]
 ```
-Then:
+
+### parseLinksInText
+Parses urls from text and converts them to <a> tag.
+```handlebars
+{{parseLinksInText 'My url is http:example.com' 'myClass'}}
+```
+Result:
+```HTML
+ My url is <a class="myClass" href="http:example.com">http:example.com</a>
+```
+
+### pluralize
+Renders singular or plural word depending on the count passed as param.
+```handleabrs
+{{pluralize count, singular, plural}}
+```
+Example:
+```handleabrs
+<span>{{pluralize 5, 'banana', 'bananas'}}</span>
+```
+Result:
 ```html
-sizes="
-        (max-width:100px) 100px,
-        (min-width:500px) 250px,
-        (min-width:2000px) 500px;" >
+<span>bananas</span>
+```
+
+### pagination
+Sets the variables needed for the pagination nav.
+
+Example: 
+```handlebars
+{{#pagination 7 20 5}}
+    <ul>
+        {{#unless startFromFirstPage}}
+            <li>
+                <a href="/news/page/{{firstPage}}">first page</a>
+            </li>
+            <li>
+            <a href="/news/page/{{previous}}">previous</a>
+            </li>
+        {{/unless}}
+
+        {{#each pages}}
+            {{#if isCurrent}}
+                <li class="active">
+                    <a>{{page}}</a>
+                </li>
+            {{/if}}
+            {{#unless isCurrent}}
+                <li>
+                    <a href="/news/page/page/{{page}}">{{page}}</a>
+                </li>
+            {{/unless}}
+        {{/each}}
+
+        {{#unless endAtLastPage}}
+            <li>
+                <a href="/news/page/{{next}}">next page</a>
+            </li>
+            <li>
+                <a href="/news/page/{{lastPage}}">last page</a>
+            </li>
+        {{/unless}}
+    </ul>
+{{/pagination}}
+```
+Result:
+```html
+<ul>
+<li><a href="/news/page/1">first page</a></li>
+<li><a href="/news/page/6">last</a></li>
+<li><a href="/news/page/5">5</a></li>
+<li><a href="/news/page/6">6</a></li>
+<li class="active">     <a>7</a></li>
+<li><a href="/news/page/6">6</a></li>
+<li><a href="/news/page/7">7</a></li>
+<li><a href="/news/page/8">next</a></li>
+<li><a href="/news/page/20">last</a></li>
+</ul>
 ```
 
 ## Dependencies

@@ -1,9 +1,6 @@
 var hbs = require('express-hbs');
 
-var colSizes = [767,768,992,1200],
-    totalCols =  12;
-
-var modes = {
+const modes = {
     vertical: 'v',
     horizontal:'w'
 };
@@ -15,24 +12,12 @@ var helpers = {
     srcSetByHeight: function(media){
         return buildSrcSet( parseMedia(media) , modes.vertical );
     },
-    srcSizes: function(){
-
-        var srcSizes = '\n';
-        var options = arguments[arguments.length - 1];
-        //Takes the array of arguments, last argument is options so length -2.
-        for(var i = 0; i < arguments.length - 1; ++i) { //classic for loop -> performance :)
-            if(i == 0)
-                srcSizes += '(max-width:';
-            else
-                srcSizes += '\n,(min-width:';
-            srcSizes += colSizes[i]+'px) '+ (colSizes[i]/(totalCols/arguments[i])).toFixed() +'px';
-
-        }
-        return srcSizes;
-
-    },
-    srcMediaFitsHeight : function(maxSize, media) {
-        var sizes = parseMedia(media);
+    srcMediaFitsHeight : function(maxSize, media, acf) {
+        var sizes;
+        if(acf)
+            sizes = parseAcfMedia(media);
+        else
+            sizes = parseMedia(media);
         if(!sizes)
             return;
         var i = 0;
@@ -60,6 +45,85 @@ var helpers = {
         // console.log(sizes);
         return src;
 
+    },
+    safeString: function (data) {
+        return new Handlebars.SafeString(data);
+    },
+    toArray: function(){
+        var array =[];
+        for(var i = 0; i < arguments.length-1; i++){
+            console.log('element',  arguments[i]);
+            array.push(arguments[i]);
+        }
+        return array;
+    },
+    parseLinksInText: function(str, classes) {
+        if(!str.length)
+            return str;
+        str
+            .match(/[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi)
+            .map(function(url){
+                str = str.replace(url, '<a href="'+url+'">'+url+'</a>');
+                // console.log('Map',url, 'str',str);
+            });
+        return str;
+    },
+    pluralize: function(count, singular, plural){
+        console.log(count, singular, plural);
+        var word =
+            (count > 1) ? plural    :
+                (count == 0) ? zero      : singular;
+        console.log(word);
+        return word;
+    },
+    pagination: function(currentPage, totalPage, size, options) {
+        var startPage, endPage, context;
+
+        if (arguments.length === 3) {
+            options = size;
+            size = 5;
+        }
+
+        startPage = currentPage - Math.floor(size / 2);
+        endPage = currentPage + Math.floor(size / 2);
+
+        if (startPage <= 0) {
+            endPage -= (startPage - 1);
+            startPage = 1;
+        }
+
+        if (endPage > totalPage) {
+            endPage = totalPage;
+            if (endPage - size + 1 > 0) {
+                startPage = endPage - size + 1;
+            } else {
+                startPage = 1;
+            }
+        }
+
+        context = {
+            startFromFirstPage: false,
+            pages: [],
+            next: currentPage+1,
+            previous: currentPage-1,
+            lastPage: totalPage,
+            firstPage: 1,
+            endAtLastPage: false,
+        };
+        if (startPage === 1) {
+            context.startFromFirstPage = true;
+        }
+        for (var i = startPage; i <= endPage; i++) {
+            context.pages.push({
+                page: i,
+                isCurrent: i === currentPage,
+            });
+        }
+        if (endPage === totalPage) {
+            context.endAtLastPage = true;
+        }
+
+        return options.fn(context);
     }
 };
 
@@ -143,7 +207,3 @@ for(var key in helpers){
     hbs.registerHelper(key, helpers[key]);
 }
 
-exports.setColSizes = function(customColSizes,customTotalCols){
-    colSizes = customColSizes;
-    totalCols = customTotalCols;
-};

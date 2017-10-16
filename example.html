@@ -1,0 +1,42 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<h1>Examples</h1>
+<h2>srcSet</h2>
+<!-- Handlebars rendered result placeholder -->
+<section id='renderedContent'></section>
+
+<script id="myTemplate" type="text/x-handlebars-template">
+    <div class="entry">
+        <h1>{{title}}</h1>
+        <div class="body">
+            {{body}}
+        </div>
+    </div>
+</script>
+
+<script>
+    !function(d) {
+        // Prepare template
+        var templateSource = d.getElementById('myTemplate').innerHTML;
+        var template = Handlebars.compile(templateSource);
+        // Data in json
+        var data = {
+            title: 'Handlebars'
+            ,body: 'Helloworld'
+        };
+        // Generate html using template and data
+        var html = template(data);
+        // Add the result to the DOM
+        d.getElementById('renderedContent').innerHTML = html;
+    }(document);
+</script>
+
+</body>
+</html>
