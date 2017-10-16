@@ -50,6 +50,9 @@ jspm_packages
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 
+.idea/preferred-vcs.xml
+
+
 # Gradle:
 .idea/**/gradle.xml
 .idea/**/libraries
