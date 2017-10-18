@@ -12,39 +12,40 @@ var helpers = {
     srcSetByHeight: function(media){
         return buildSrcSet( parseMedia(media) , modes.vertical );
     },
-    srcMediaFitsHeight : function(maxSize, media, acf) {
-        var sizes;
-        if(acf)
-            sizes = parseAcfMedia(media);
-        else
-            sizes = parseMedia(media);
-        if(!sizes)
+    parsePost : function (post, options){
+        if(typeof post === "undefined")
             return;
-        var i = 0;
-        while(i < sizes.length-1 && sizes[i].height < maxSize){
-            i++;
-        };
-        var src = sizes[i].src;
-        // console.log(sizes);
-        return src;
+        post.media = post._embedded['wp:featuredmedia'][0];
 
+        return options.fn(post);
     },
-    srcMediaFitsWidth : function(maxSize, media, acf) {
-        var sizes;
-        if(acf)
-            sizes = parseAcfMedia(media);
-        else
-            sizes = parseMedia(media);
-        if(!sizes)
-            return;
-        var i = 0;
-        while(i < sizes.length-1 && sizes[i].width < maxSize){
-            i++;
-        };
-        var src = sizes[i].src;
-        // console.log(sizes);
-        return src;
-
+    srcMediaFitsHeight : function(maxSize,media) {
+        const sizes = parseMedia(media);
+        const closest = sizes.filter(function (size) {
+            return size.height >= maxSize;
+        })[0]; //first element of substring
+        return closest.src;
+    },
+    srcMediaFitsWidth : function(maxSize, media) {
+        const sizes = parseMedia(media);
+        const closest = sizes.filter(function (size) {
+            return size.width >= maxSize;
+        })[0]; //first element of substring
+        return closest.src;
+    },
+    srcMediaFitsHeightAcf : function(maxSize,media) {
+        const sizes = parseAcfMedia(media);
+        const closest = sizes.filter(function (size) {
+            return size.height >= maxSize;
+        })[0]; //first element of substring
+        return closest.src;
+    },
+    srcMediaFitsWidthAcf : function(maxSize, media) {
+        const sizes = parseAcfMedia(media);
+        const closest = sizes.filter(function (size) {
+            return size.width >= maxSize;
+        })[0]; //first element of substring
+        return closest.src;
     },
     safeString: function (data) {
         return new Handlebars.SafeString(data);
@@ -147,9 +148,9 @@ var buildSrcSet = function(srcSet,mode){
 
 var parseMedia = function(media){
     if(!media)
-        return console.warn('Media is',media);
+        return;
     if(!media.media_details)
-        return console.warn('Media has no details',media);
+        return;
     var srcSet = [];
     for (var property in media.media_details.sizes) {
         var size = media.media_details.sizes[property];
