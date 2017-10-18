@@ -24,7 +24,7 @@ Example:
 ```handlebars
 <img src="/images/if-no-image.jpg" srcset="{{{srcSet post._embedded.wp:featuredmedia.0. }}}">
 ```
-Result:
+Output:
 ```html
 <img
     src="http://your-wordpress-site.com/wp-content/uploads/sites/2/2017/03/My-Image-1.jpg"
@@ -40,28 +40,48 @@ Same as `srcSet` but uses height values.
 
 ### srcMediaFitsHeight / srcMediaFitsWidth
 Takes the closest image that covers the height/width passed as param:
-```javasctipt
-srcMediaFitsHeight(300px, postMediaObject)
-```
-
 ```handlebars
-{{srcSizes col-xs col-sm, [...]}}
+{{srcMediaFitsWidth 200 post._embedded.wp:featuredmedia.0.}}
 ```
 Output:
 ```html
-<img src="http://your-wordpress-site.com/wp-content/uploads/sites/2/2017/03/fullsize.jpg"
-sizes=" (max-width:767px) [pixels-col-xs-passed]px,
-        (min-width:768px) [pixels-col-sm-passed]px,
-        ...
-        ">
+http://your-wordpress-site.com/wp-content/uploads/sites/2/2017/03/My-Image-1-300x225.jpg
 ```
+### srcMediaFitsHeightAcf / srcMediaFitsWidthAcf
+The same as srcMediaFitsHeight / srcMediaFitsWidth but passing custom field's (acf) media as param.
+
+### parsePost (post)
+Embeds post object as using Handlebars builtin helper *#with* with some useful new variables:
+#### media
+Contains the post media reference `post._embedded.wp:featuredmedia.0.` for a smarter code when calling image helpers:
+```handlebars
+    {{parsePost post}}
+        {{title}}
+        {{#if media}}
+            <img 
+                src="{{srcMediaFitsWidth 200 media}}" 
+                src-set="{{srcSet media}}">
+        {{/if}}
+    {{/parsePost}}
+``` 
+instead of 
+```handlebars
+    <h1>{{post.title}}</h1>  
+    {{#if post._embedded.wp:featuredmedia.0.source}}
+        <img 
+            src="{{srcMediaFitsWidth 200 post._embedded.wp:featuredmedia.0.}}" 
+            src-set="{{srcSet post._embedded.wp:featuredmedia.0.}}">
+    {{/if}}
+``` 
+
+
 
 ###toArray
 Converts passed params to array:
  ```handlebars
  {{toArray param1 param2 param3}}
  ```
- Result:
+ Output:
 ```javascript
 [param1, param2, param3]
 ```
@@ -71,7 +91,7 @@ Parses urls from text and converts them to <a> tag.
 ```handlebars
 {{parseLinksInText 'My url is http:example.com' 'myClass'}}
 ```
-Result:
+Output:
 ```HTML
  My url is <a class="myClass" href="http:example.com">http:example.com</a>
 ```
@@ -85,7 +105,7 @@ Example:
 ```handleabrs
 <span>{{pluralize 5, 'banana', 'bananas'}}</span>
 ```
-Result:
+Output:
 ```html
 <span>bananas</span>
 ```
@@ -130,7 +150,7 @@ Example:
     </ul>
 {{/pagination}}
 ```
-Result:
+Output:
 ```html
 <ul>
 <li><a href="/news/page/1">first page</a></li>
