@@ -22,31 +22,35 @@ var helpers = {
     },
     srcMediaFitsHeight : function(maxSize,media) {
         const sizes = parseMedia(media);
-        const closest = sizes.filter(function (size) {
+        const firstBigger = sizes.filter(function (size) {
             return size.height >= maxSize;
         })[0]; //first element of substring
+        const closest = (firstBigger) ? firstBigger : sizes[0];
         return closest.src;
     },
     srcMediaFitsWidth : function(maxSize, media) {
         if(!media) return;
         const sizes = parseMedia(media);
-        const closest = sizes.filter(function (size) {
+        const firstBigger = sizes.filter(function (size) {
             return size.width >= maxSize;
         })[0]; //first element of substring
+        const closest = (firstBigger) ? firstBigger : sizes[0];
         return closest.src;
     },
     srcMediaFitsHeightAcf : function(maxSize,media) {
         const sizes = parseAcfMedia(media);
-        const closest = sizes.filter(function (size) {
+        const firstBigger = sizes.filter(function (size) {
             return size.height >= maxSize;
         })[0]; //first element of substring
+        const closest = (firstBigger) ? firstBigger : sizes[0];
         return closest.src;
     },
     srcMediaFitsWidthAcf : function(maxSize, media) {
         const sizes = parseAcfMedia(media);
-        const closest = sizes.filter(function (size) {
+        const firstBigger = sizes.filter(function (size) {
             return size.width >= maxSize;
         })[0]; //first element of substring
+        const closest = (firstBigger) ? firstBigger : sizes[0];
         return closest.src;
     },
     safeString: function (data) {
