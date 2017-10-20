@@ -15,7 +15,8 @@ var helpers = {
     parsePost : function (post, options){
         if(typeof post === "undefined")
             return;
-        post.media = post._embedded['wp:featuredmedia'][0];
+        const featuredMedia = post._embedded['wp:featuredmedia'];
+        post.media = (featuredMedia)? featuredMedia[0]: null;
 
         return options.fn(post);
     },
@@ -27,6 +28,7 @@ var helpers = {
         return closest.src;
     },
     srcMediaFitsWidth : function(maxSize, media) {
+        if(!media) return;
         const sizes = parseMedia(media);
         const closest = sizes.filter(function (size) {
             return size.width >= maxSize;
@@ -155,9 +157,9 @@ var parseMedia = function(media){
     for (var property in media.media_details.sizes) {
         var size = media.media_details.sizes[property];
         srcSet.push({
-            width: 	size.width,
+            width:  size.width,
             height: size.height,
-            src: 	size.source_url
+            src:    size.source_url
         });
     }
     return srcSet;
@@ -171,30 +173,30 @@ var parseAcfMedia = function(media){
 
     if(media.sizes.thumbnail){
         srcSet.push({
-            width: 	media.sizes['thumbnail-width'],
+            width:  media.sizes['thumbnail-width'],
             height: media.sizes['thumbnail-height'],
-            src: 	media.sizes.thumbnail
+            src:    media.sizes.thumbnail
         });
     }
     if(media.sizes.medium){
         srcSet.push({
-            width: 	media.sizes['medium-width'],
+            width:  media.sizes['medium-width'],
             height: media.sizes['medium-height'],
-            src: 	media.sizes.medium
+            src:    media.sizes.medium
         });
     }
     if(media.sizes.medium_large){
         srcSet.push({
-            width: 	media.sizes['medium_large-width'],
+            width:  media.sizes['medium_large-width'],
             height: media.sizes['medium_large-height'],
-            src: 	media.sizes.medium_large
+            src:    media.sizes.medium_large
         });
     }
     if(media.sizes.large){
         srcSet.push({
-            width: 	media.sizes['large-width'],
+            width:  media.sizes['large-width'],
             height: media.sizes['large-height'],
-            src: 	media.sizes.large
+            src:    media.sizes.large
         });
     }
 
